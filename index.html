@@ -3,475 +3,456 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MY Memory</title>
+    <title>MY Memory - Design by Shehabuzzaman</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --accent-color: #667eea;
-            --bg-color: #f8fafc;
-            --card-bg: #ffffff;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-radius: 12px;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+        .drag-over {
+            border-color: #0284c7 !important;
+            background-color: #f0f9ff !important;
+            transform: scale(1.01);
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        header {
-            background: var(--primary-gradient);
-            color: white;
-            padding: 2.5rem 1rem;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        header p {
-            font-size: 1rem;
-            font-weight: 300;
-            opacity: 0.9;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            flex: 1;
-            width: 100%;
-        }
-
-        .upload-section {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 2.5rem;
-        }
-
-        .upload-section h2 {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-            color: var(--text-main);
-        }
-
-        .drop-zone {
-            border: 2px dashed #cbd5e1;
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            text-align: center;
-            background: #fafafa;
-            cursor: pointer;
+        .card-hover {
             transition: all 0.3s ease;
-            margin-bottom: 1.25rem;
         }
-
-        .drop-zone.dragover {
-            border-color: var(--accent-color);
-            background: #f0f4ff;
-        }
-
-        .drop-zone p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .drop-zone input[type="file"] {
-            display: none;
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 0.85rem 1rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            resize: vertical;
-            min-height: 90px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        textarea:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
-        }
-
-        .btn {
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.75rem;
-            font-size: 1rem;
-            font-weight: 500;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
-        }
-
-        .btn:hover {
-            opacity: 0.95;
-            transform: translateY(-1px);
-        }
-
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        .gallery-title {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            font-weight: 600;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 0.5rem;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .memory-card {
-            background: var(--card-bg);
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s ease;
-        }
-
-        .memory-card:hover {
-            transform: translateY(-4px);
-        }
-
-        .memory-card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .memory-content {
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-        }
-
-        .memory-comment {
-            font-size: 0.95rem;
-            color: var(--text-main);
-            line-height: 1.5;
-            word-break: break-word;
-        }
-
-        /* Loading spinner style */
-        .loading {
-            display: none;
-            font-size: 0.9rem;
-            color: var(--accent-color);
-            margin-top: 0.5rem;
-            font-weight: 500;
-        }
-
-        footer {
-            background: #1e293b;
-            color: #94a3b8;
-            text-align: center;
-            padding: 1.5rem;
-            font-size: 0.9rem;
-            margin-top: auto;
-        }
-
-        footer span {
-            color: #ffffff;
-            font-weight: 500;
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
-<body>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white">
 
-    <header>
-        <h1>MY Memory</h1>
-        <p>Capture and preserve your favorite moments</p>
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-sky-600 via-indigo-600 to-purple-600 text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-6 text-center relative">
+            <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight drop-shadow-sm">
+                <i class="fa-solid font-normal fa-camera-retro mr-2"></i>MY Memory
+            </h1>
+            <p class="text-sky-100 mt-2 text-sm md:text-base font-medium tracking-wide">
+                Design by <span class="underline decoration-sky-300 underline-offset-4 font-semibold text-white">Shehabuzzaman</span>
+            </p>
+        </div>
     </header>
 
-    <div class="container">
-        
-        <section class="upload-section">
-            <h2>Add a New Memory</h2>
-            <form id="memoryForm">
-                <div class="drop-zone" id="dropZone">
-                    <p id="dropText">Drag & drop an image here, or <strong>click to browse</strong></p>
-                    <input type="file" id="imageInput" accept="image/*">
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+
+        <!-- Upload Container / Form -->
+        <section class="bg-white rounded-2xl shadow-md p-6 md:p-8 mb-10 border border-slate-100 max-w-2xl mx-auto">
+            <h2 class="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up text-sky-600"></i> Add New Memory
+            </h2>
+
+            <form id="memory-form" class="space-y-5">
+                <!-- Drag and Drop Area -->
+                <div id="drop-zone" class="border-2 border-dashed border-slate-300 rounded-xl p-6 text-center cursor-pointer hover:border-sky-500 transition-all duration-200 bg-slate-50 relative">
+                    <input type="file" id="file-input" accept="image/*" class="hidden">
+                    <div id="upload-prompt" class="space-y-3">
+                        <div class="w-14 h-14 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto text-2xl">
+                            <i class="fa-solid fa-image"></i>
+                        </div>
+                        <div>
+                            <p class="text-slate-700 font-semibold">Drag & drop your photo here</p>
+                            <p class="text-xs text-slate-400 mt-1">or click to browse from computer</p>
+                        </div>
+                    </div>
+
+                    <!-- Image Preview Area -->
+                    <div id="preview-container" class="hidden relative group">
+                        <img id="image-preview" src="" alt="Preview" class="max-h-64 mx-auto rounded-lg shadow-sm object-cover">
+                        <button type="button" id="remove-preview-btn" class="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full shadow hover:bg-red-600 transition text-xs">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <textarea id="commentInput" placeholder="Write a comment about this memory..." required></textarea>
+                <!-- Comment Input -->
+                <div>
+                    <label for="comment-input" class="block text-sm font-semibold text-slate-700 mb-2">Memory Caption / Comment</label>
+                    <textarea id="comment-input" rows="3" placeholder="Write a meaningful memory comment here..." required class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition text-slate-700 text-sm resize-none"></textarea>
                 </div>
 
-                <button type="submit" class="btn" id="submitBtn">Upload Memory</button>
-                <div class="loading" id="loadingText">Uploading to Firebase, please wait...</div>
+                <!-- Submit Button -->
+                <button type="submit" id="submit-btn" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-semibold py-3 px-6 rounded-xl shadow-md transition duration-200 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Save Memory
+                </button>
             </form>
         </section>
 
+        <!-- Notification Toast -->
+        <div id="toast" class="hidden fixed bottom-6 right-6 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl text-sm flex items-center gap-3 z-50 transition-all">
+            <i id="toast-icon" class="fa-solid fa-circle-check text-green-400"></i>
+            <span id="toast-message">Memory saved!</span>
+        </div>
+
+        <!-- Memories Grid Gallery -->
         <section>
-            <h2 class="gallery-title">Memory Gallery</h2>
-            <div class="gallery-grid" id="galleryGrid">
-                <p id="statusMsg" style="color: var(--text-muted);">Loading memories...</p>
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-images text-sky-600"></i> Gallery Memories
+                </h2>
+                <span id="memory-count" class="bg-sky-100 text-sky-700 text-xs font-semibold px-3 py-1 rounded-full">0 items</span>
+            </div>
+
+            <!-- Cards Grid -->
+            <div id="memories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Memory cards will be populated dynamically via JavaScript -->
+            </div>
+
+            <!-- Empty State Display -->
+            <div id="empty-state" class="text-center py-16 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto text-2xl mb-3">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-slate-700">No Memories Saved Yet</h3>
+                <p class="text-slate-400 text-sm mt-1">Upload a photo and leave a comment to populate your memory collection.</p>
             </div>
         </section>
+    </main>
 
-    </div>
-
-    <footer>
-        <p>&copy; 2026 MY Memory. Design by <span>Shehabuzzaman</span>.</p>
+    <!-- Footer Section -->
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800 mt-16">
+        <div class="max-w-6xl mx-auto px-4 text-center space-y-3">
+            <h3 class="text-xl font-bold text-white tracking-wide">MY Memory</h3>
+            <p class="text-sm text-slate-400">Preserving special moments with simple elegance.</p>
+            <div class="pt-2 text-xs text-slate-500 border-t border-slate-800/60 max-w-md mx-auto">
+                Designed & Developed by <strong class="text-slate-300">Shehabuzzaman</strong> &copy; <span id="year"></span>. All rights reserved.
+            </div>
+        </div>
     </footer>
 
-    <!-- Firebase SDK Scripts -->
+    <!-- Firebase SDK Setup & App Script -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        // Import standard Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // ==========================================
-        // আপনার ফায়ারবেস কনফিগারেশন এখানে বসান 👇
-         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCnQRPorqvRvIGpGjwKaj-LKPADM1BGJH0",
-  authDomain: "mymemory-6dcdd.firebaseapp.com",
-  projectId: "mymemory-6dcdd",
-  storageBucket: "mymemory-6dcdd.firebasestorage.app",
-  messagingSenderId: "90480740636",
-  appId: "1:90480740636:web:2d9f42dc1af764781912d9",
-  measurementId: "G-ZNSLFHB3LC"
-};
-        // ==========================================
+        // Set current copyright year
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Firebase Configuration Object
+        // IMPORTANT: When deploying to your own custom Firebase Project, replace these placeholders with your actual keys from Firebase Console!
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+  apiKey: "AIzaSyDEGZXJpzwp2VUAfa3GXMWKPlf8t6seH6o",
+  authDomain: "my-memory-shehab.firebaseapp.com",
+  projectId: "my-memory-shehab",
+  storageBucket: "my-memory-shehab.firebasestorage.app",
+  messagingSenderId: "323712809822",
+  appId: "1:323712809822:web:5eff88fa97ea5c7ca5adcf",
+  measurementId: "G-FDP5YQ7984"
+};
+
+
+        // App ID helper for scoped paths
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'my-memory-app';
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const db = getFirestore(app);
-        const storage = getStorage(app);
 
-        const dropZone = document.getElementById('dropZone');
-        const imageInput = document.getElementById('imageInput');
-        const dropText = document.getElementById('dropText');
-        const memoryForm = document.getElementById('memoryForm');
-        const commentInput = document.getElementById('commentInput');
-        const galleryGrid = document.getElementById('galleryGrid');
-        const submitBtn = document.getElementById('submitBtn');
-        const loadingText = document.getElementById('loadingText');
-        const statusMsg = document.getElementById('statusMsg');
+        // State variables
+        let selectedBase64Image = null;
+        let currentUser = null;
 
-        let selectedFile = null;
+        // UI Element References
+        const dropZone = document.getElementById('drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const uploadPrompt = document.getElementById('upload-prompt');
+        const previewContainer = document.getElementById('preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        const removePreviewBtn = document.getElementById('remove-preview-btn');
+        const memoryForm = document.getElementById('memory-form');
+        const commentInput = document.getElementById('comment-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const memoriesGrid = document.getElementById('memories-grid');
+        const emptyState = document.getElementById('empty-state');
+        const memoryCount = document.getElementById('memory-count');
 
-        // পেজ লোড হওয়ার সাথে সাথে ডাটাবেস থেকে মেমরিগুলো ফেচ করা
-        window.addEventListener('DOMContentLoaded', fetchMemories);
+        // Toast message utility
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
 
-        dropZone.addEventListener('click', () => imageInput.click());
+            toastMsg.textContent = message;
+            toastIcon.className = isError ? "fa-solid fa-triangle-exclamation text-red-400" : "fa-solid fa-circle-check text-green-400";
+            
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3500);
+        }
 
-        imageInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                selectedFile = e.target.files[0];
-                dropText.innerHTML = `Selected: <strong>${selectedFile.name}</strong>`;
+        // Authenticate user with Firebase
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    const cred = await signInWithCustomToken(auth, __initial_auth_token);
+                    currentUser = cred.user;
+                } else {
+                    const cred = await signInAnonymously(auth);
+                    currentUser = cred.user;
+                }
+                listenToMemories();
+            } catch (err) {
+                console.error("Firebase authentication error:", err);
+                showToast("Auth initialization failed", true);
             }
+        }
+
+        // Drag and Drop Event Listeners
+        dropZone.addEventListener('click', (e) => {
+            if (e.target.closest('#remove-preview-btn')) return;
+            fileInput.click();
         });
 
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, (e) => {
                 e.preventDefault();
-                dropZone.classList.add('dragover');
+                e.stopPropagation();
+                dropZone.classList.add('drag-over');
             }, false);
         });
 
         ['dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, (e) => {
                 e.preventDefault();
-                dropZone.classList.remove('dragover');
+                e.stopPropagation();
+                dropZone.classList.remove('drag-over');
             }, false);
         });
 
         dropZone.addEventListener('drop', (e) => {
             const files = e.dataTransfer.files;
-            if (files.length > 0 && files[0].type.startsWith('image/')) {
-                selectedFile = files[0];
-                dropText.innerHTML = `Selected: <strong>${selectedFile.name}</strong>`;
-            } else {
-                alert('Please drop a valid image file.');
+            if (files && files.length > 0) {
+                handleFile(files[0]);
             }
         });
 
-        // ফর্ম সাবমিট হ্যান্ডলার (ফায়ারবেসে আপলোড করা)
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Convert selected image file to compressed Base64 Data URL
+        function handleFile(file) {
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select a valid image file!', true);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // Compress image canvas to avoid exceeding Firestore doc limits
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const MAX_WIDTH = 1000;
+                    const scaleSize = MAX_WIDTH / img.width;
+                    const width = (img.width > MAX_WIDTH) ? MAX_WIDTH : img.width;
+                    const height = (img.width > MAX_WIDTH) ? (img.height * scaleSize) : img.height;
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Reduced JPEG quality for compact storage
+                    selectedBase64Image = canvas.toDataURL('image/jpeg', 0.75);
+
+                    imagePreview.src = selectedBase64Image;
+                    uploadPrompt.classList.add('hidden');
+                    previewContainer.classList.remove('hidden');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Clear image selection preview
+        removePreviewBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectedBase64Image = null;
+            fileInput.value = '';
+            imagePreview.src = '';
+            previewContainer.classList.add('hidden');
+            uploadPrompt.classList.remove('hidden');
+        });
+
+        // Submit form data to Firestore
         memoryForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            if (!selectedFile) {
-                alert('Please select or drop an image first.');
+            if (!selectedBase64Image) {
+                showToast('Please choose or drop an image first.', true);
                 return;
             }
 
-            const commentText = commentInput.value.trim();
-            if (!commentText) {
-                alert('Please write a comment.');
+            const comment = commentInput.value.trim();
+            if (!comment) {
+                showToast('Please enter a comment for this memory.', true);
                 return;
             }
 
-            // বাটন ডিজেবল এবং লোডিং টেক্সট শো করা
+            if (!currentUser) {
+                showToast('Authentication pending. Try again in a second.', true);
+                return;
+            }
+
             submitBtn.disabled = true;
-            loadingText.style.display = 'block';
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> Saving...`;
 
             try {
-                // ১. ফায়ারবেস স্টোরেজে ছবি আপলোড করা
-                const storageRef = ref(storage, 'memories/' + Date.now() + '_' + selectedFile.name);
-                const snapshot = await uploadBytes(storageRef, selectedFile);
-                const downloadURL = await getDownloadURL(snapshot.ref);
-
-                // ২. ফায়ারস্টোর ডাটাবেসে ইমেজ লিংক ও কমেন্ট সেভ করা
-                await addDoc(collection(db, "memories"), {
-                    imageUrl: downloadURL,
-                    comment: commentText,
-                    createdAt: Date.now()
+                // Save to Firestore Rule-compliant path: /artifacts/{appId}/public/data/memories
+                const memoriesRef = collection(db, 'artifacts', appId, 'public', 'data', 'memories');
+                await addDoc(memoriesRef, {
+                    imageUrl: selectedBase64Image,
+                    comment: comment,
+                    createdAt: serverTimestamp(),
+                    author: 'Shehabuzzaman Fan'
                 });
 
-                // ফর্ম রিসেট করা এবং গ্যালারি রিফ্রেশ করা
-                resetForm();
-                fetchMemories();
+                showToast('Memory added successfully!');
+                
+                // Reset form state
+                memoryForm.reset();
+                removePreviewBtn.click();
             } catch (error) {
-                console.error("Error uploading memory: ", error);
-                alert('Failed to upload memory. Please check your Firebase configuration.');
+                console.error("Error saving document: ", error);
+                showToast('Failed to save memory. Check console for details.', true);
             } finally {
                 submitBtn.disabled = false;
-                loadingText.style.display = 'none';
+                submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Save Memory`;
             }
         });
 
-        // ফায়ারস্টোর থেকে সব মেমরি রিড করে ওয়েবসাইটে দেখানো
-        async function fetchMemories() {
+        // Delete a memory card
+        window.deleteMemory = async (id) => {
+            if (!currentUser) return;
             try {
-                const q = query(collection(db, "memories"), orderBy("createdAt", "desc"));
-                const querySnapshot = await getDocs(q);
-                
-                galleryGrid.innerHTML = '';
-                
-                if (querySnapshot.empty) {
-                    galleryGrid.innerHTML = `<p id="statusMsg" style="color: var(--text-muted);">No memories found yet. Add your first one above!</p>`;
-                    return;
-                }
-
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    renderMemoryCard(data.imageUrl, data.comment);
-                });
-            } catch (error) {
-                console.error("Error fetching memories: ", error);
-                statusMsg.textContent = "Could not load memories. Please verify your Firebase setup.";
+                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'memories', id);
+                await deleteDoc(docRef);
+                showToast('Memory removed!');
+            } catch (err) {
+                console.error('Failed to delete:', err);
+                showToast('Could not delete item.', true);
             }
+        };
+
+        // Realtime Firestore Listener to render cards
+        function listenToMemories() {
+            const memoriesRef = collection(db, 'artifacts', appId, 'public', 'data', 'memories');
+
+            onSnapshot(memoriesRef, (snapshot) => {
+                const items = [];
+                snapshot.forEach((docSnap) => {
+                    items.push({ id: docSnap.id, ...docSnap.data() });
+                });
+
+                // Sort items locally by date (newest first) to comply with query rules
+                items.sort((a, b) => {
+                    const dateA = a.createdAt?.seconds || 0;
+                    const dateB = b.createdAt?.seconds || 0;
+                    return dateB - dateA;
+                });
+
+                renderMemories(items);
+            }, (error) => {
+                console.error("Snapshot error:", error);
+            });
         }
 
-        function renderMemoryCard(imgSrc, comment) {
-            const card = document.createElement('div');
-            card.className = 'memory-card';
-            card.imageUrl = imgSrc; // store reference if needed
-            card.innerHTML = `
-                <img src="${imgSrc}" alt="Memory Image">
-                <div class="memory-content">
-                    <p class="memory-comment">${escapeHtml(comment)}</p>
-                </div>
-            `;
-            galleryGrid.appendChild(card);
+        // Render card UI elements
+        function renderMemories(memories) {
+            memoriesGrid.innerHTML = '';
+            memoryCount.textContent = `${memories.length} item${memories.length === 1 ? '' : 's'}`;
+
+            if (memories.length === 0) {
+                emptyState.classList.remove('hidden');
+                memoriesGrid.classList.add('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            memoriesGrid.classList.remove('hidden');
+
+            memories.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 card-hover flex flex-col justify-between";
+                
+                const dateStr = item.createdAt ? new Date(item.createdAt.seconds * 1000).toLocaleDateString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric'
+                }) : 'Just now';
+
+                card.innerHTML = `
+                    <div>
+                        <!-- Card Image Header -->
+                        <div class="relative bg-slate-900 group aspect-video overflow-hidden">
+                            <img src="${item.imageUrl}" alt="Memory Image" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                            <button onclick="deleteMemory('${item.id}')" title="Delete Memory" class="absolute top-3 right-3 bg-slate-900/70 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200">
+                                <i class="fa-solid fa-trash-can text-xs"></i>
+                            </button>
+                        </div>
+                        
+                        <!-- Card Content / Comment -->
+                        <div class="p-5">
+                            <p class="text-slate-700 text-sm leading-relaxed whitespace-pre-line font-normal">${escapeHtml(item.comment)}</p>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer info -->
+                    <div class="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                        <span><i class="fa-regular fa-calendar mr-1"></i> ${dateStr}</span>
+                        <span class="font-medium text-slate-500"><i class="fa-solid fa-heart text-red-400 mr-1"></i> Saved</span>
+                    </div>
+                `;
+
+                memoriesGrid.appendChild(card);
+            });
         }
 
-        function resetForm() {
-            selectedFile = null;
-            imageInput.value = '';
-            commentInput.value = '';
-            dropText.innerHTML = 'Drag & drop an image here, or <strong>click to browse</strong>';
-        }
-
+        // Helper function to sanitize user HTML comment output
         function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, m => map[m]);
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
-
-
+        // Run setup on load
+        window.addEventListener('load', initAuth);
     </script>
 </body>
 </html>
-
-
-
-<!--
-
-//=============================================Firebase Start======================================================
-<script>
-
-    // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyCnQRPorqvRvIGpGjwKaj-LKPADM1BGJH0",
-  authDomain: "mymemory-6dcdd.firebaseapp.com",
-  projectId: "mymemory-6dcdd",
-  storageBucket: "mymemory-6dcdd.firebasestorage.app",
-  messagingSenderId: "90480740636",
-  appId: "1:90480740636:web:2d9f42dc1af764781912d9",
-  measurementId: "G-ZNSLFHB3LC"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-</script>
-//=============================================Firebase End======================================================
-
-</body>
-</html>
-
--->
